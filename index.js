@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/user');
 const courseRouter = require('./routes/course');
 const adminRouter = require('./routes/admin');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.use(express.json());
@@ -25,6 +26,13 @@ app.use(
   })
 );
 
+// Rate Limiting Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+app.use(limiter);
 // Use routers
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/admin', adminRouter);
