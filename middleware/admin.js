@@ -1,8 +1,8 @@
-const JWT = require("jsonwebtoken");
-const { JWT_ADMIN_PASSWORD } = require("../config");
+const JWT = require('jsonwebtoken');
+const { JWT_ADMIN_PASSWORD } = require('../config');
 
 function adminMiddleware(req, res, next) {
-  const token = req.headers.token;
+  /*  const token = req.headers.token;
 
   if (!token) {
     return res.status(401).json({
@@ -20,7 +20,16 @@ function adminMiddleware(req, res, next) {
       error: err.message,
     });
   }
-  next();
+  next(); */
+  // Cookie Based Authentication
+  if (req.session.adminId) {
+    req.adminId = req.session.adminId;
+    next();
+  } else {
+    return res.status(401).json({
+      message: "Unauthorized: Admin access required",
+    });
+  }
 }
 
 module.exports = adminMiddleware;

@@ -1,12 +1,12 @@
-const JWT = require("jsonwebtoken");
-const { JWT_USER_PASSWORD } = require("../config");
+const JWT = require('jsonwebtoken');
+const { JWT_USER_PASSWORD } = require('../config');
 
 function userMiddleware(req, res, next) {
-  const token = req.headers.token;
+  /*  const token = req.headers.token;
 
   if (!token) {
     return res.status(401).json({
-      message: "Authorization token is missing",
+      message: 'Authorization token is missing',
     });
   }
 
@@ -18,12 +18,21 @@ function userMiddleware(req, res, next) {
     next();
   } catch (err) {
     return res.status(401).json({
-      message: "Invalid or expired token",
+      message: 'Invalid or expired token',
       error: err.message,
     });
   }
 
-  next();
+  next(); */
+  // Cookie Based Authentication
+  if (req.session.userId) {
+    req.userId = req.session.userId;
+    next();
+  } else {
+    return res.status(401).json({
+      message: 'Unauthorized: Please log in',
+    });
+  }
 }
 
 module.exports = userMiddleware;
